@@ -18,7 +18,7 @@ public class SpringDocConfig {
         return new OpenAPI()
                 .info(new Info().title("极简后台接口平台 API 文档")
                         .description("这是一个基于 Spring Boot 3 构建的极简后台接口平台。")
-                        .version("v1.0.0"))
+                        .version("v0.0.1"))
 
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()

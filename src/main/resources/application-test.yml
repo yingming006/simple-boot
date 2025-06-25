@@ -17,3 +17,11 @@ file:
   upload-path: /www/wwwroot/java/simple/
   # 外部访问上传图片的URL前缀
   access-url-prefix: /uploads/
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+  javadoc:
+    enabled: true

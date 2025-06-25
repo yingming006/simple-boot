@@ -32,6 +32,8 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+  javadoc:
+    enabled: false
 
 file:
   upload-path: /www/wwwroot/java/simple/

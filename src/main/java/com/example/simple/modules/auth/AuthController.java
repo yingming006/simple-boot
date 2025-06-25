@@ -3,7 +3,6 @@ package com.example.simple.modules.auth;
 import com.example.simple.annotation.AuthIgnore;
 import com.example.simple.annotation.RateLimit;
 import com.example.simple.common.GlobalResponse;
-import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.modules.auth.domain.LoginVO;
 import com.example.simple.modules.auth.domain.RefreshTokenDTO;
 import com.example.simple.modules.auth.domain.UserLoginDTO;
@@ -12,15 +11,14 @@ import com.example.simple.modules.user.UserService;
 import com.example.simple.modules.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * 认证接口
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -29,6 +27,9 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
 
+    /**
+     * 用户注册
+     */
     @AuthIgnore
     @PostMapping("/register")
     public GlobalResponse<Void> register(@RequestBody @Valid UserRegisterDTO registerDTO) {
@@ -36,6 +37,9 @@ public class AuthController {
         return GlobalResponse.success();
     }
 
+    /**
+     * 用户登录
+     */
     @RateLimit(count = 5, time = 10, limitType = RateLimit.LimitType.IP, message = "登录尝试过于频繁，请稍后重试")
     @AuthIgnore
     @PostMapping("/login")
@@ -45,6 +49,9 @@ public class AuthController {
         return GlobalResponse.success(tokens);
     }
 
+    /**
+     * 刷新Token
+     */
     @AuthIgnore
     @PostMapping("/refresh")
     public GlobalResponse<LoginVO> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
