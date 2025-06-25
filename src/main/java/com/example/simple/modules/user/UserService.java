@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.simple.common.dto.PageQueryDTO;
 import com.example.simple.common.utils.AuthUtils;
+import com.example.simple.common.vo.PageVO;
 import com.example.simple.exception.BusinessException;
 import com.example.simple.common.ResponseCode;
 import com.example.simple.modules.auth.AuthService;
@@ -60,7 +61,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public IPage<UserVO> getUserPage(UserDTO queryDTO, PageQueryDTO pageQueryDTO) {
+    public PageVO<UserVO> getUserPage(UserDTO queryDTO, PageQueryDTO pageQueryDTO) {
         Page<User> page = new Page<>(pageQueryDTO.getPageNum(), pageQueryDTO.getPageSize());
 
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -70,7 +71,7 @@ public class UserService {
 
         Page<User> userPage = userMapper.selectPage(page, queryWrapper);
 
-        return userPage.convert(userConverter::toUserVO);
+        return PageVO.of(userPage.convert(userConverter::toUserVO));
     }
 
     @Transactional
@@ -81,6 +82,7 @@ public class UserService {
             throw new BusinessException("用户已存在");
         }
 
+        createDTO.setPassword(passwordEncoder.encode(createDTO.getPassword()));
         User newUser = userConverter.toUser(createDTO);
 
         userMapper.insert(newUser);
@@ -158,13 +160,5 @@ public class UserService {
             throw new BusinessException("用户名或密码错误");
         }
         return user;
-    }
-
-    @Transactional
-    public void updateAvatar(Long userId, String avatarUrl) {
-        User userToUpdate = new User();
-        userToUpdate.setId(userId);
-        userToUpdate.setAvatarUrl(avatarUrl);
-        userMapper.updateById(userToUpdate);
     }
 }

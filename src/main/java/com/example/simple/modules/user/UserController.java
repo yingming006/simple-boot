@@ -30,9 +30,7 @@ public class UserController {
 
     @GetMapping("/page")
     public GlobalResponse<PageVO<UserVO>> getUserPage(UserDTO queryDTO, PageQueryDTO pageQueryDTO) {
-        IPage<UserVO> userPage = userService.getUserPage(queryDTO, pageQueryDTO);
-        PageVO<UserVO> pageVO = PageVO.of(userPage);
-        return GlobalResponse.success(pageVO);
+        return GlobalResponse.success(userService.getUserPage(queryDTO, pageQueryDTO));
     }
 
     /**

@@ -1,12 +1,13 @@
 package com.example.simple.config.aop;
 
 import com.example.simple.annotation.OperationLog;
+import com.example.simple.common.utils.IpUtils;
 import com.example.simple.interceptor.LoginUser;
 import com.example.simple.interceptor.UserContext;
 import com.example.simple.modules.log.domain.SysOperationLog;
 import com.example.simple.modules.log.service.OperationLogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper; // 引入Jackson的ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Aspect
@@ -34,7 +32,7 @@ import java.util.stream.Collectors;
 public class OperationLogAspect {
 
     private final OperationLogService operationLogService;
-    private final ObjectMapper objectMapper; // 注入Spring Boot自动配置的ObjectMapper
+    private final ObjectMapper objectMapper;
 
     @Pointcut("@annotation(com.example.simple.annotation.OperationLog)")
     public void operationLogPointcut() {
@@ -70,11 +68,9 @@ public class OperationLogAspect {
 
         logEntity.setMethod(signature.getDeclaringTypeName() + "." + signature.getName());
 
-        // 使用Jackson序列化参数，并过滤掉不可序列化的类型
         logEntity.setParams(serializeParams(joinPoint.getArgs()));
 
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        logEntity.setIpAddress(getIpAddress(request));
+        logEntity.setIpAddress(IpUtils.getCurrentIpAddress());
 
         logEntity.setDuration(duration);
 

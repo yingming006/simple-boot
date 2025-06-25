@@ -14,4 +14,6 @@ logging:
     com.example.simple: DEBUG
 
 file:
-  upload-path: /data/test/uploads/
+  upload-path: /www/wwwroot/java/simple/
+  # 外部访问上传图片的URL前缀
+  access-url-prefix: /uploads/

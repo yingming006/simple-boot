@@ -15,3 +15,5 @@ logging:
 
 file:
   upload-path: D:/uploads/
+  # 外部访问上传图片的URL前缀
+  access-url-prefix: /uploads/

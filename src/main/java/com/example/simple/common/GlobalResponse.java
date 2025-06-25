@@ -27,6 +27,10 @@ public class GlobalResponse<T> {
         return new GlobalResponse<>(code, message, null);
     }
 
+    public static GlobalResponse<Void> error(String message) {
+        return new GlobalResponse<>(ResponseCode.ERROR.getCode(), message, null);
+    }
+
     public static GlobalResponse<Void> error(ResponseCode responseCode) {
         return new GlobalResponse<>(responseCode.getCode(), responseCode.getMessage(), null);
     }

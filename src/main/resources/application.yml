@@ -33,18 +33,7 @@ mybatis-plus:
 logging:
   config: classpath:logback-spring.xml
 
-# 文件上传配置
-file:
-  # upload-path: /data/uploads/
-  upload-path: D:/uploads/
-  # 外部访问上传图片的URL前缀
-  access-url-prefix: /uploads/
-
 auth:
   single-session:
     # true:开启后，新登录会使旧设备Token失效; false:允许多设备同时登录
     enabled: true
-
-app:
-  # 全局时区配置
-  time-zone: Asia/Shanghai

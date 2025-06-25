@@ -33,6 +33,7 @@ springdoc:
   api-docs:
     enabled: false
 
-# 文件上传配置
 file:
-  upload-path: /data/prod/uploads/
+  upload-path: /www/wwwroot/java/simple/
+  # 外部访问上传图片的URL前缀
+  access-url-prefix: /uploads/
