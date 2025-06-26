@@ -1,4 +1,4 @@
-package com.example.simple.modules.user.domain;
+package com.example.simple.modules.user.vo;
 
 import lombok.Data;
 

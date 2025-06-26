@@ -1,24 +1,15 @@
 package com.example.simple.interceptor;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.simple.annotation.AuthIgnore;
 import com.example.simple.modules.auth.AuthService;
-import com.example.simple.modules.auth.domain.UserToken;
-import com.example.simple.modules.auth.mapper.UserTokenMapper;
-import com.example.simple.modules.user.domain.User;
 import com.example.simple.exception.BusinessException;
-import com.example.simple.modules.user.mapper.UserMapper;
-import com.example.simple.common.ResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.example.simple.modules.user.domain;
+package com.example.simple.modules.user.dto;
 
 import com.example.simple.annotation.XssSafe;
 import jakarta.validation.constraints.NotBlank;

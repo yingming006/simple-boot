@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS `sys_operation_log` (
 
 -- 数据导出被取消选择。
 
--- 导出  表 simple_api_db.user 结构
-CREATE TABLE IF NOT EXISTS `user` (
+-- 导出  表 simple_api_db.sys_user 结构
+CREATE TABLE IF NOT EXISTS `sys_user` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- 数据导出被取消选择。
 
--- 导出  表 simple_api_db.user_token 结构
-CREATE TABLE IF NOT EXISTS `user_token` (
+-- 导出  表 simple_api_db.sys_user_token 结构
+CREATE TABLE IF NOT EXISTS `sys_user_token` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint NOT NULL COMMENT '用户ID',
   `access_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '访问令牌',

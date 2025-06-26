@@ -1,6 +1,5 @@
-package com.example.simple.modules.user.domain;
+package com.example.simple.modules.user.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,8 +8,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user")
-public class User {
+@TableName("sys_user")
+public class UserEntity {
     @TableId
     private Long id;
     private String username;

@@ -1,15 +1,18 @@
-package com.example.simple.modules.user;
+package com.example.simple.modules.user.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.simple.annotation.RequiresRole;
 import com.example.simple.common.GlobalResponse;
 import com.example.simple.common.dto.PageQueryDTO;
 import com.example.simple.common.vo.PageVO;
 import com.example.simple.interceptor.UserContext;
-import com.example.simple.modules.user.domain.*;
+import com.example.simple.modules.user.dto.UserCreateDTO;
+import com.example.simple.modules.user.dto.UserDTO;
+import com.example.simple.modules.user.dto.UserPasswordUpdateDTO;
+import com.example.simple.modules.user.dto.UserUpdateDTO;
+import com.example.simple.modules.user.service.UserService;
+import com.example.simple.modules.user.vo.UserVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

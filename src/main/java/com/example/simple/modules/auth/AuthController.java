@@ -7,8 +7,8 @@ import com.example.simple.modules.auth.domain.LoginVO;
 import com.example.simple.modules.auth.domain.RefreshTokenDTO;
 import com.example.simple.modules.auth.domain.UserLoginDTO;
 import com.example.simple.modules.auth.domain.UserRegisterDTO;
-import com.example.simple.modules.user.UserService;
-import com.example.simple.modules.user.domain.User;
+import com.example.simple.modules.user.entity.UserEntity;
+import com.example.simple.modules.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +44,7 @@ public class AuthController {
     @AuthIgnore
     @PostMapping("/login")
     public GlobalResponse<LoginVO> login(@Valid @RequestBody UserLoginDTO loginDTO) {
-        User user = userService.validateUser(loginDTO);
+        UserEntity user = userService.validateUser(loginDTO);
         LoginVO tokens = authService.createToken(user);
         return GlobalResponse.success(tokens);
     }

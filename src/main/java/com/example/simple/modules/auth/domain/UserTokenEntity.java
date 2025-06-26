@@ -6,8 +6,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user_token")
-public class UserToken {
+@TableName("sys_user_token")
+public class UserTokenEntity {
     private Long id;
     private Long userId;
     private String accessToken;

@@ -6,10 +6,10 @@ import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.config.properties.AuthConfigProperties;
 import com.example.simple.exception.BusinessException;
 import com.example.simple.interceptor.LoginUser;
-import com.example.simple.modules.auth.domain.UserToken;
+import com.example.simple.modules.auth.domain.UserTokenEntity;
 import com.example.simple.modules.auth.domain.LoginVO;
 import com.example.simple.modules.auth.mapper.UserTokenMapper;
-import com.example.simple.modules.user.domain.User;
+import com.example.simple.modules.user.entity.UserEntity;
 import com.example.simple.modules.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class AuthService {
     private static final long REFRESH_TOKEN_EXPIRE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
     @Transactional
-    public LoginVO createToken(User user) {
+    public LoginVO createToken(UserEntity user) {
         if (authConfigProperties.getSingleSession().isEnabled()) {
             invalidateUserTokens(user.getId());
         }
@@ -40,7 +40,7 @@ public class AuthService {
         String accessToken = UUID.randomUUID().toString().replace("-", "");
         String refreshToken = UUID.randomUUID().toString().replace("-", "");
 
-        UserToken userToken = new UserToken();
+        UserTokenEntity userToken = new UserTokenEntity();
         userToken.setUserId(user.getId());
         userToken.setAccessToken(accessToken);
         userToken.setAccessTokenExpireTime(now.plusSeconds(ACCESS_TOKEN_EXPIRE_SECONDS));
@@ -53,12 +53,12 @@ public class AuthService {
 
     @Transactional
     public LoginVO refreshToken(String refreshTokenValue) {
-        LambdaQueryWrapper<UserToken> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserToken::getRefreshToken, refreshTokenValue)
-                .eq(UserToken::getIsActive, true)
-                .ge(UserToken::getRefreshTokenExpireTime, LocalDateTime.now());
+        LambdaQueryWrapper<UserTokenEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserTokenEntity::getRefreshToken, refreshTokenValue)
+                .eq(UserTokenEntity::getIsActive, true)
+                .ge(UserTokenEntity::getRefreshTokenExpireTime, LocalDateTime.now());
 
-        UserToken oldToken = userTokenMapper.selectOne(queryWrapper);
+        UserTokenEntity oldToken = userTokenMapper.selectOne(queryWrapper);
         if (oldToken == null) {
             throw new BusinessException(401, "刷新凭证无效或已过期");
         }
@@ -66,17 +66,17 @@ public class AuthService {
         oldToken.setIsActive(false);
         userTokenMapper.updateById(oldToken);
 
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setId(oldToken.getUserId());
         return createToken(user);
     }
 
     @Transactional
     public void invalidateUserTokens(Long userId) {
-        LambdaUpdateWrapper<UserToken> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(UserToken::getUserId, userId)
-                .eq(UserToken::getIsActive, true)
-                .set(UserToken::getIsActive, false);
+        LambdaUpdateWrapper<UserTokenEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserTokenEntity::getUserId, userId)
+                .eq(UserTokenEntity::getIsActive, true)
+                .set(UserTokenEntity::getIsActive, false);
         userTokenMapper.update(null, updateWrapper);
     }
 
@@ -86,17 +86,17 @@ public class AuthService {
             throw new BusinessException(401, "用户未登录，请提供凭证");
         }
 
-        LambdaQueryWrapper<UserToken> tokenQuery = new LambdaQueryWrapper<>();
-        tokenQuery.eq(UserToken::getAccessToken, accessToken)
-                .eq(UserToken::getIsActive, true)
-                .ge(UserToken::getAccessTokenExpireTime, LocalDateTime.now());
+        LambdaQueryWrapper<UserTokenEntity> tokenQuery = new LambdaQueryWrapper<>();
+        tokenQuery.eq(UserTokenEntity::getAccessToken, accessToken)
+                .eq(UserTokenEntity::getIsActive, true)
+                .ge(UserTokenEntity::getAccessTokenExpireTime, LocalDateTime.now());
 
-        UserToken userToken = userTokenMapper.selectOne(tokenQuery);
+        UserTokenEntity userToken = userTokenMapper.selectOne(tokenQuery);
         if (userToken == null) {
             throw new BusinessException(401, "凭证无效或已过期");
         }
 
-        User user = userMapper.selectById(userToken.getUserId());
+        UserEntity user = userMapper.selectById(userToken.getUserId());
         if (user == null) {
             // Token有效但用户被删了，也算认证失败
             throw new BusinessException(401, "凭证关联的用户不存在");
