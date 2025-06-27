@@ -11,30 +11,15 @@
     <property name="FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
 
-    <!-- 定义控制台输出器 (Appender) -->
-<!--    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder>-->
-<!--            <pattern>${CONSOLE_LOG_PATTERN}</pattern>-->
-<!--            <charset>UTF-8</charset>-->
-<!--        </encoder>-->
-<!--    </appender>-->
-
     <!-- 动态加载不同环境的 Appender 配置 -->
     <!-- 本地开发环境 -->
     <springProfile name="local">
-<!--        <root level="INFO">-->
-<!--            <appender-ref ref="CONSOLE"/>-->
-<!--        </root>-->
         <logger name="com.example.simple" level="DEBUG"/>
     </springProfile>
 
     <!-- 测试和生产环境，引入外部文件配置 -->
     <springProfile name="test, prod">
         <include resource="logback-appender-prod.xml"/>
-<!--        <root level="INFO">-->
-<!--            <appender-ref ref="CONSOLE"/>-->
-<!--            <appender-ref ref="FILE"/>-->
-<!--        </root>-->
     </springProfile>
 
 </configuration>
