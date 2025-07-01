@@ -1,0 +1,59 @@
+package ${package.Parent}.converter;
+
+import ${package.Parent}.dto.${entity}DTO;
+import ${package.Parent}.vo.${entity}VO;
+import ${package.Entity}.${entity};
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+/**
+ * <p>
+ * ${entity} 实体转换器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Mapper(componentModel = "spring")
+public interface ${entity}Converter {
+
+    ${entity}Converter INSTANCE = Mappers.getMapper(${entity}Converter.class);
+
+    /**
+     * DTO -> Entity
+     * @param dto DTO对象
+     * @return Entity对象
+     */
+    ${entity} dtoToEntity(${entity}DTO dto);
+
+    /**
+     * Entity -> VO
+     * @param entity Entity对象
+     * @return VO对象
+     */
+    ${entity}VO entityToVo(${entity} entity);
+
+    /**
+     * Entity列表 -> VO列表
+     * @param list Entity列表
+     * @return VO列表
+     */
+    List<${entity}VO> entityListToVoList(List<${entity}> list);
+
+    /**
+     * Entity分页 -> VO分页
+     * @param page Entity分页对象
+     * @return VO分页对象
+     */
+    default Page<${entity}VO> pageToVoPage(Page<${entity}> page) {
+        if (page == null) {
+            return null;
+        }
+        Page<${entity}VO> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        voPage.setRecords(entityListToVoList(page.getRecords()));
+        return voPage;
+    }
+}

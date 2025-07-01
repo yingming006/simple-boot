@@ -1,5 +1,7 @@
 package com.example.simple.modules.auth.domain;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -15,5 +17,6 @@ public class UserTokenEntity {
     private String refreshToken;
     private LocalDateTime refreshTokenExpireTime;
     private Boolean isActive;
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 }

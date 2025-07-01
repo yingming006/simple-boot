@@ -1,0 +1,78 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Parent}.dto.${entity}DTO;
+import ${package.Parent}.vo.${entity}VO;
+import ${package.Parent}.converter.${entity}Converter;
+import ${superServiceImplClassPackage};
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+@RequiredArgsConstructor
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> {
+
+    private final ${entity}Converter ${entity.toLowerCase()}Converter;
+
+    /**
+     * 分页查询
+     *
+     * @param page 分页对象
+     * @param dto 查询条件
+     * @return 分页视图对象
+     */
+    public Page<${entity}VO> page(${entity}DTO dto, Page<${entity}> page) {
+        ${entity} queryEntity = ${entity.toLowerCase()}Converter.dtoToEntity(dto);
+        Page<${entity}> entityPage = this.page(page, new QueryWrapper<>(queryEntity));
+        return ${entity.toLowerCase()}Converter.pageToVoPage(entityPage);
+    }
+
+    /**
+     * 根据ID查询
+     *
+     * @param id 主键ID
+     * @return 视图对象
+     */
+    public ${entity}VO getVOById(Serializable id) {
+        ${entity} entity = this.getById(id);
+        return ${entity.toLowerCase()}Converter.entityToVo(entity);
+    }
+
+    /**
+     * 新增
+     *
+     * @param dto 数据传输对象
+     * @return 是否成功
+     */
+    public boolean saveByDTO(${entity}DTO dto) {
+        ${entity} entity = ${entity.toLowerCase()}Converter.dtoToEntity(dto);
+        return this.save(entity);
+    }
+
+    /**
+     * 根据ID修改
+     *
+     * @param dto 数据传输对象
+     * @return 是否成功
+     */
+    public boolean updateByDTO(${entity}DTO dto) {
+        ${entity} entity = ${entity.toLowerCase()}Converter.dtoToEntity(dto);
+        // 注意：这里的dtoToEntity转换可能会丢失ID，确保DTO中有ID字段或手动设置
+        // 示例：entity.setId(dto.getId()); // 确保DTO中有id
+        return this.updateById(entity);
+    }
+
+}

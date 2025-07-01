@@ -1,0 +1,80 @@
+package ${package.Entity};
+
+#foreach($pkg in ${importEntityPackages})
+import ${pkg};
+#end
+#if(${entityLombokModel})
+#if(${superEntityClass})
+import lombok.EqualsAndHashCode;
+#end
+#if(${chainModel})
+import lombok.experimental.Accessors;
+#end
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 实体类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#foreach($annotation in ${entityClassAnnotations})
+${annotation.displayName}
+#end
+#if(${superEntityClass})
+public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}>#end {
+#else
+public class ${entity} implements Serializable {
+#end
+
+#if(${entitySerialVersionUID})
+#if(${entitySerialAnnotation})
+    @Serial
+#end
+    private static final long serialVersionUID = 1L;
+#end
+
+#foreach($field in ${table.fields})
+#if(${field.keyFlag})
+#set($keyPropertyName=${field.propertyName})
+#end
+#if("$!field.comment" != "")
+    /**
+     * $!{field.comment}
+     */
+#end
+#if(${field.keyFlag})
+#if(${field.keyIdentityFlag})
+    @TableId(type = IdType.AUTO)
+#elseif(!$null.isNull(${idType}) && "$!idType" != "")
+    @TableId(type = IdType.${idType})
+#else
+    @TableId("${field.name}")
+#end
+#elseif(${field.versionField})
+    @Version
+#elseif(${field.logicDeleteField})
+    @TableLogic
+#else
+#end
+#if(${field.propertyType.equals("Boolean")})
+#if(${entityBooleanColumnRemoveIsPrefix})
+    @Getter(onMethod_ = @__({@Override}))
+#end
+#end
+    private ${field.propertyType} ${field.propertyName};
+
+#end
+#if(!${superEntityClass} && ${activeRecord})
+    @Override
+    protected Serializable pkVal() {
+#if(${keyPropertyName})
+        return this.${keyPropertyName};
+#else
+        return null;
+#end
+    }
+#end
+}

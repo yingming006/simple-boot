@@ -1,5 +1,7 @@
 package com.example.simple.modules.log.domain;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -17,5 +19,6 @@ public class SysOperationLog {
     private String params;
     private String ipAddress;
     private Long duration;
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 }

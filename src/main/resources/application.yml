@@ -28,7 +28,7 @@ mybatis-plus:
       # logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       # logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
       # 主键策略 AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
-      id-type: auto
+      id-type: ASSIGN_UUID
 
 logging:
   config: classpath:logback-spring.xml
