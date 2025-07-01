@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -29,6 +31,16 @@ public class FileService {
             throw new IllegalArgumentException("上传的文件不能为空");
         }
 
+        LocalDate today = LocalDate.now();
+        String datePath = today.format(DateTimeFormatter.ofPattern("yyyy/MM"));
+
+        File uploadDir = new File(uploadPath, datePath);
+        if (!uploadDir.exists()) {
+            if (!uploadDir.mkdirs()) {
+                throw new IOException("创建目录失败");
+            }
+        }
+
         String originalFilename = file.getOriginalFilename();
         String fileExtension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
@@ -36,14 +48,9 @@ public class FileService {
         }
         String newFileName = UUID.randomUUID().toString().replace("-", "") + fileExtension;
 
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
         File destFile = new File(uploadDir, newFileName);
         file.transferTo(destFile);
 
-        return accessUrlPrefix + newFileName;
+        return accessUrlPrefix + datePath + "/" + newFileName;
     }
 }
