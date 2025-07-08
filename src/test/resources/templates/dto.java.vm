@@ -1,0 +1,38 @@
+package ${package.Parent}.dto;
+
+#foreach($pkg in ${table.importPackages})
+#if($pkg.contains("com.baomidou.mybatisplus.annotation") || $pkg.contains("java.io.Serializable"))
+#else
+import ${pkg};
+#end
+#end
+import java.io.Serial;
+import java.io.Serializable;
+import lombok.Data;
+
+/**
+ * <p>
+ * $!{table.comment} 数据传输对象
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Data
+public class ${entity}DTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+#foreach($field in ${table.fields})
+#if($field.propertyName != 'createTime' && $field.propertyName != 'updateTime' && $field.propertyName != 'createBy' && $field.propertyName != 'updateBy')
+#if("$!field.comment" != "")
+    /**
+     * $!{field.comment}
+     */
+#end
+    private ${field.propertyType} ${field.propertyName};
+
+#end
+#end
+}
