@@ -13,8 +13,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface UserConverter {
 
-    UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
-
     /**
      * 将 User 实体转换为 UserVO 视图对象
      * @param user 实体对象

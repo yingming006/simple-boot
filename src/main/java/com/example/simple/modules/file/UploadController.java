@@ -19,7 +19,6 @@ import java.util.List;
 public class UploadController {
 
     private final FileService fileService;
-    private final UserService userService;
 
     /**
      * @param file 需要上传的任意文件

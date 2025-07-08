@@ -113,24 +113,18 @@ public class MySQLGeneratorTest {
 
         InjectionConfig.Builder configBuilder = new InjectionConfig.Builder();
 
-        configBuilder.customFile(builder -> {
-                    builder.fileName("VO.java")
-                            .enableFileOverride()
-                            .templatePath("/templates/vo.java.vm")
-                            .packageName("vo");
-                })
-                .customFile(builder -> {
-                    builder.fileName("DTO.java")
-                            .enableFileOverride()
-                            .templatePath("/templates/dto.java.vm")
-                            .packageName("dto");
-                })
-                .customFile(builder -> {
-                    builder.fileName("Converter.java")
-                            .enableFileOverride()
-                            .templatePath("/templates/converter.java.vm")
-                            .packageName("converter");
-                })
+        configBuilder.customFile(builder -> builder.fileName("VO.java")
+                .enableFileOverride()
+                .templatePath("/templates/vo.java.vm")
+                .packageName("vo"))
+                .customFile(builder -> builder.fileName("DTO.java")
+                        .enableFileOverride()
+                        .templatePath("/templates/dto.java.vm")
+                        .packageName("dto"))
+                .customFile(builder -> builder.fileName("Converter.java")
+                        .enableFileOverride()
+                        .templatePath("/templates/converter.java.vm")
+                        .packageName("converter"))
         ;
 
         configBuilder.beforeOutputFile((tableInfo, objectMap) -> {
