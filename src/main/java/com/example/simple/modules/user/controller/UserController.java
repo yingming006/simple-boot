@@ -3,8 +3,8 @@ package com.example.simple.modules.user.controller;
 import com.example.simple.annotation.RequiresRole;
 import com.example.simple.common.GlobalResponse;
 import com.example.simple.common.dto.PageQueryDTO;
+import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.common.vo.PageVO;
-import com.example.simple.interceptor.UserContext;
 import com.example.simple.modules.user.dto.UserCreateDTO;
 import com.example.simple.modules.user.dto.UserDTO;
 import com.example.simple.modules.user.dto.UserPasswordUpdateDTO;
@@ -29,7 +29,7 @@ public class UserController {
      */
     @GetMapping("/me")
     public GlobalResponse<UserVO> getUserInfo() {
-        Long userId = UserContext.getUserId();
+        Long userId = AuthUtils.getCurrentUserId();
         UserVO userVO = userService.getUserInfo(userId);
         return GlobalResponse.success(userVO);
     }
@@ -69,7 +69,7 @@ public class UserController {
      */
     @PutMapping("/me")
     public GlobalResponse<Void> updateProfile(@RequestBody UserUpdateDTO updateDTO) {
-        Long currentUserId = UserContext.getUserId();
+        Long currentUserId = AuthUtils.getCurrentUserId();
         userService.updateUser(currentUserId, updateDTO);
         return GlobalResponse.success();
     }
@@ -79,7 +79,7 @@ public class UserController {
      */
     @PutMapping("/me/password")
     public GlobalResponse<Void> updatePassword(@RequestBody UserPasswordUpdateDTO passwordUpdateDTO) {
-        Long currentUserId = UserContext.getUserId();
+        Long currentUserId = AuthUtils.getCurrentUserId();
         userService.updatePassword(currentUserId, passwordUpdateDTO);
         return GlobalResponse.success();
     }

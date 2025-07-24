@@ -31,7 +31,7 @@ public class AuthService {
     private static final long REFRESH_TOKEN_EXPIRE_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
     @Transactional
-    public LoginVO createToken(UserEntity user) {
+    public LoginVO createToken(LoginUser user) {
         if (authConfigProperties.getSingleSession().isEnabled()) {
             invalidateUserTokens(user.getId());
         }
@@ -63,12 +63,19 @@ public class AuthService {
             throw new BusinessException(401, "刷新凭证无效或已过期");
         }
 
+        UserEntity userEntity = userMapper.selectById(oldToken.getUserId());
+        if (userEntity == null) {
+            oldToken.setIsActive(false);
+            userTokenMapper.updateById(oldToken);
+            throw new BusinessException(401, "凭证关联的用户不存在");
+        }
+
         oldToken.setIsActive(false);
         userTokenMapper.updateById(oldToken);
 
-        UserEntity user = new UserEntity();
-        user.setId(oldToken.getUserId());
-        return createToken(user);
+        LoginUser loginUser = new LoginUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(), userEntity.getRole());
+
+        return createToken(loginUser);
     }
 
     @Transactional
@@ -98,11 +105,10 @@ public class AuthService {
 
         UserEntity user = userMapper.selectById(userToken.getUserId());
         if (user == null) {
-            // Token有效但用户被删了，也算认证失败
             throw new BusinessException(401, "凭证关联的用户不存在");
         }
 
-        return new LoginUser(user.getId(), user.getRole());
+        return new LoginUser(user.getId(), user.getUsername(), user.getPassword(), user.getRole());
     }
 
     @Transactional

@@ -1,9 +1,9 @@
 package com.example.simple.config.aop;
 
 import com.example.simple.annotation.OperationLog;
+import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.common.utils.IpUtils;
 import com.example.simple.interceptor.LoginUser;
-import com.example.simple.interceptor.UserContext;
 import com.example.simple.modules.log.domain.SysOperationLog;
 import com.example.simple.modules.log.service.OperationLogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,19 +61,15 @@ public class OperationLogAspect {
         OperationLog operationLogAnnotation = method.getAnnotation(OperationLog.class);
         logEntity.setOperation(operationLogAnnotation.value());
 
-        LoginUser loginUser = UserContext.getLoginUser();
+        LoginUser loginUser = AuthUtils.getLoginUser();
         if (loginUser != null) {
             logEntity.setUserId(loginUser.getId());
         }
 
         logEntity.setMethod(signature.getDeclaringTypeName() + "." + signature.getName());
-
         logEntity.setParams(serializeParams(joinPoint.getArgs()));
-
         logEntity.setIpAddress(IpUtils.getCurrentIpAddress());
-
         logEntity.setDuration(duration);
-
         operationLogService.save(logEntity);
     }
 
@@ -87,7 +83,6 @@ public class OperationLogAspect {
             return "[]";
         }
         try {
-            // 过滤掉Request, Response, MultipartFile等特殊类型的参数
             List<Object> filteredArgs = Arrays.stream(args)
                     .filter(arg -> !(arg instanceof HttpServletRequest)
                             && !(arg instanceof HttpServletResponse)
@@ -95,25 +90,10 @@ public class OperationLogAspect {
                             && !(arg instanceof MultipartFile[]))
                     .collect(Collectors.toList());
 
-            // 使用ObjectMapper进行序列化
             return objectMapper.writeValueAsString(filteredArgs);
         } catch (JsonProcessingException e) {
             log.error("操作日志参数序列化失败: {}", e.getMessage());
             return "参数序列化失败";
         }
-    }
-
-    private String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
     }
 }

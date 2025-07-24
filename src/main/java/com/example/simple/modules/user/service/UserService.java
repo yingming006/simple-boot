@@ -150,16 +150,4 @@ public class UserService {
 
         userMapper.deleteByIds(ids);
     }
-
-    @Transactional(readOnly = true)
-    public UserEntity validateUser(UserLoginDTO loginDTO) {
-        LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserEntity::getUsername, loginDTO.getUsername());
-        UserEntity user = userMapper.selectOne(queryWrapper);
-
-        if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            throw new BusinessException("用户名或密码错误");
-        }
-        return user;
-    }
 }
