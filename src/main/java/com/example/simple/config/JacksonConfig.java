@@ -1,8 +1,6 @@
 package com.example.simple.config;
 
-import com.example.simple.config.xss.XssDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -31,10 +29,6 @@ public class JacksonConfig {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
         return builder -> {
-
-            SimpleModule xssModule = new SimpleModule("XssStringJsonDeserializer");
-            xssModule.addDeserializer(String.class, new XssDeserializer());
-            builder.modules(xssModule);
 
             builder.timeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 

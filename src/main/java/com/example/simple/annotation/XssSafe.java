@@ -17,4 +17,13 @@ import java.lang.annotation.Target;
 @JacksonAnnotationsInside
 @JsonDeserialize(using = XssDeserializer.class)
 public @interface XssSafe {
+
+    XssMode mode() default XssMode.STRIP;
+
+    enum XssMode {
+        /** 剥离所有HTML标签 (默认) */
+        STRIP,
+        /** 保留安全的富文本HTML标签 */
+        RICH_TEXT
+    }
 }

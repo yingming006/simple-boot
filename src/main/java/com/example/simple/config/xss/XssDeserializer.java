@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.util.StringUtils;
@@ -17,33 +20,11 @@ import java.util.Objects;
  * Jackson反序列化器，用于执行XSS净化。
  * 实现了 ContextualDeserializer 接口，以便在运行时根据字段注解动态选择净化策略。
  */
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class XssDeserializer extends JsonDeserializer<String> implements ContextualDeserializer {
 
-    /**
-     * 净化模式的枚举。
-     * STRIP: 默认模式，剥离所有HTML。
-     * RICH_TEXT: 富文本模式，保留安全的HTML。
-     */
-    private enum Mode {
-        STRIP,
-        RICH_TEXT
-    }
-
-    private Mode mode;
-
-    /**
-     * 默认构造函数，必须存在。默认使用最严格的模式。
-     */
-    public XssDeserializer() {
-        this.mode = Mode.STRIP;
-    }
-
-    /**
-     * 带模式的构造函数。
-     */
-    private XssDeserializer(Mode mode) {
-        this.mode = mode;
-    }
+    private XssSafe.XssMode mode = XssSafe.XssMode.STRIP;
 
     @Override
     public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
@@ -67,17 +48,21 @@ public class XssDeserializer extends JsonDeserializer<String> implements Context
      */
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) {
+        // 对于非String类型或没有属性上下文的场景，返回默认的反序列化器即可。
         if (property == null) {
-            return new XssDeserializer(Mode.STRIP);
+            return this;
         }
 
+        // 获取字段上的注解
         XssSafe xssSafe = property.getAnnotation(XssSafe.class);
 
-        if (Objects.nonNull(xssSafe)) {
-            return new XssDeserializer(Mode.RICH_TEXT);
+        // 因为此反序列化器由注解触发，xssSafe通常不为null。
+        // 如果注解中的模式与当前实例的模式不同，则创建一个新实例。
+        if (Objects.nonNull(xssSafe) && !Objects.equals(xssSafe.mode(), this.mode)) {
+            return new XssDeserializer(xssSafe.mode());
         }
 
-        return new XssDeserializer(Mode.STRIP);
+        return this;
     }
 
     /**
@@ -85,11 +70,10 @@ public class XssDeserializer extends JsonDeserializer<String> implements Context
      * @return Safelist实例
      */
     private static Safelist createRichTextSafelist() {
-        Safelist safelist = Safelist.basicWithImages();
-        safelist.addTags("h1", "h2", "h3", "h4", "h5", "h6", "hr", "span", "div");
-        safelist.addAttributes("a", "target");
-        safelist.addAttributes(":all", "style", "class");
-        safelist.addEnforcedAttribute("a", "rel", "nofollow");
-        return safelist;
+        return Safelist.basicWithImages()
+                .addTags("h1", "h2", "h3", "h4", "h5", "h6", "hr", "span", "div", "p", "blockquote", "ul", "ol", "li")
+                .addAttributes("a", "target", "href", "title")
+                .addAttributes(":all", "class")
+                .addEnforcedAttribute("a", "rel", "nofollow");
     }
 }
