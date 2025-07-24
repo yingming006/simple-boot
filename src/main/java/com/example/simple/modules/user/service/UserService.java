@@ -90,8 +90,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(UserUpdateDTO updateDTO) {
-        UserEntity user = userMapper.selectById(updateDTO.getId());
+    public void updateUser(Long userId, UserUpdateDTO updateDTO) {
+        UserEntity user = userMapper.selectById(userId);
         if (user == null) {
             throw new BusinessException("用户不存在");
         }
