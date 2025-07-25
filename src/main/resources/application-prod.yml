@@ -7,8 +7,29 @@ spring:
     activate:
       on-profile: prod
 
+  # -------------------------------------------------------------------
+  # 生产环境数据源配置 (!!!部署时必须填写!!!)
+  # -------------------------------------------------------------------
+  datasource:
+    # TODO: 替换为生产环境数据库的JDBC URL
+    url: "jdbc:mysql://<your-production-db-host>:3306/simple_api_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+    # TODO: 替换为生产环境数据库的用户名
+    username: "<your-production-db-user>"
+    # TODO: 替换为生产环境数据库的密码 (建议使用配置中心或环境变量注入，而非明文填写)
+    password: "<your-production-db-password>"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: SimpleHikariPool-Prod
+      # 初始化连接的超时时间 (30秒)
+      connection-timeout: 30000
+      # 生产环境建议维持少量热连接以提高性能
+      minimum-idle: 10
+      # 根据生产服务器规格和预期并发量调整
+      maximum-pool-size: 50
+
 server:
   error:
+    # 不在响应中暴露堆栈信息，增强安全性
     include-stacktrace: never
 
 # Mybatis-plus 日志配置 (生产环境关闭 SQL 打印以提高性能)
@@ -23,6 +44,8 @@ logging:
     com.example.simple: INFO
 
 file:
+  # TODO: 替换为生产服务器上实际的文件上传绝对路径
+  upload-path: "/path/to/your/production/uploads/"
   access-url-prefix: /uploads/
 
 springdoc:
