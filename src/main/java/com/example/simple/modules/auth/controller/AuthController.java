@@ -3,6 +3,7 @@ package com.example.simple.modules.auth.controller;
 import com.example.simple.annotation.AuthIgnore;
 import com.example.simple.annotation.RateLimit;
 import com.example.simple.common.GlobalResponse;
+import com.example.simple.framework.idempotent.IdempotentService;
 import com.example.simple.modules.auth.service.AuthService;
 import com.example.simple.modules.auth.vo.LoginVO;
 import com.example.simple.modules.auth.dto.RefreshTokenDTO;
@@ -15,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 认证接口
@@ -32,6 +30,7 @@ public class AuthController {
     private final SysUserService sysUserService;
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
+    private final IdempotentService idempotentService;
 
     /**
      * 用户注册
@@ -91,5 +90,19 @@ public class AuthController {
     public GlobalResponse<Void> logout() {
         authService.logout();
         return GlobalResponse.success();
+    }
+
+    /**
+     * 获取幂等性Token
+     * <p>
+     * 在执行需要幂等性保护的写操作（如创建、更新）之前，客户端应先调用此接口获取一个唯一的Token，
+     * 并将此Token放在后续请求的 'Idempotent-Token' 请求头中。
+     * Token单次有效，有效期为30分钟。
+     *
+     * @return 幂等性Token字符串
+     */
+    @GetMapping("/idempotent-token")
+    public GlobalResponse<String> getIdempotentToken() {
+        return GlobalResponse.success(idempotentService.createToken());
     }
 }

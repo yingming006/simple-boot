@@ -1,5 +1,6 @@
 package com.example.simple.modules.user.controller;
 
+import com.example.simple.annotation.Idempotent;
 import com.example.simple.common.GlobalResponse;
 import com.example.simple.common.dto.PageQueryDTO;
 import com.example.simple.common.utils.AuthUtils;
@@ -66,6 +67,7 @@ public class SysUserController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('users:create')")
+    @Idempotent
     public GlobalResponse<Void> create(@Valid @RequestBody SysUserCreateDTO createDTO) {
         sysUserService.createUser(createDTO);
         return GlobalResponse.success();
