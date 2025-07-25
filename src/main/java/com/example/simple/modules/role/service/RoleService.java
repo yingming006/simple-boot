@@ -20,6 +20,7 @@ import com.example.simple.modules.role.vo.RoleVO;
 import com.example.simple.modules.user.entity.SysUserRoleEntity;
 import com.example.simple.modules.user.mapper.SysUserRoleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,7 +37,7 @@ public class RoleService {
     private final RoleMapper roleMapper;
     private final RolePermissionMapper rolePermissionMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final PermissionMapper permissionMapper; // 注入 PermissionMapper
+    private final PermissionMapper permissionMapper;
     private final RoleConverter roleConverter = RoleConverter.INSTANCE;
 
     private static final List<String> CORE_PERMISSIONS = List.of("users:assign_roles", "roles:assign_permissions");
@@ -116,6 +117,7 @@ public class RoleService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "permissions", allEntries = true)
     public void assignPermissions(Long roleId, List<Long> permissionIds) {
         RoleEntity role = roleMapper.selectById(roleId);
         if (role == null) {
@@ -139,7 +141,6 @@ public class RoleService {
             List<RolePermissionEntity> newRelations = permissionIds.stream()
                     .map(permId -> new RolePermissionEntity(roleId, permId))
                     .toList();
-            // 使用批量插入
             rolePermissionMapper.insertBatch(newRelations);
         }
     }

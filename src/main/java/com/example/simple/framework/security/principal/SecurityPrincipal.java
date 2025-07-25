@@ -8,13 +8,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class SecurityPrincipal implements UserDetails {
+public class SecurityPrincipal implements UserDetails, Serializable {
     private Long id;
     private String username;
 

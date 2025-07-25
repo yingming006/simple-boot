@@ -21,6 +21,8 @@ import com.example.simple.modules.user.mapper.SysUserMapper;
 import com.example.simple.modules.user.mapper.SysUserRoleMapper;
 import com.example.simple.modules.user.vo.SysUserVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,7 @@ public class SysUserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "user_info", key = "#userId")
     public SysUserVO getUserInfo(Long userId) {
         SysUserEntity user = sysUserMapper.selectById(userId);
         if (user == null) {
@@ -92,6 +95,7 @@ public class SysUserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user_info", key = "#userId")
     public void updateUser(Long userId, SysUserUpdateDTO updateDTO) {
         SysUserEntity user = sysUserMapper.selectById(userId);
         if (user == null) {
@@ -149,6 +153,7 @@ public class SysUserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "permissions", key = "#userId")
     public void assignRoles(Long userId, List<Long> roleIds) {
         SysUserEntity user = sysUserMapper.selectById(userId);
         if (user == null) {

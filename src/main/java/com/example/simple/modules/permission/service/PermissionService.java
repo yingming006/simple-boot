@@ -8,6 +8,7 @@ import com.example.simple.modules.permission.vo.PermissionVO;
 import com.example.simple.modules.role.mapper.RoleMapper;
 import com.example.simple.modules.user.mapper.SysUserRoleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -56,6 +57,7 @@ public class PermissionService {
      * @param userId 用户ID
      * @return 权限标识符集合
      */
+    @Cacheable(cacheNames = "permissions", key = "#userId")
     public Set<String> getAuthorityStringsByUserId(Long userId) {
         Set<String> permissions = new HashSet<>();
 

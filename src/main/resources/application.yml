@@ -1,6 +1,11 @@
 # ===================================================================
 #               主配置文件 (所有环境共享的默认配置)
 # ===================================================================
+app:
+  cache:
+    # 缓存总开关。设置为 false 可以完全禁用缓存功能，应用将回退到直接访问数据库。
+    enabled: true
+
 server:
   port: 8080
   servlet:
@@ -12,6 +17,14 @@ server:
 spring:
   application:
     name: simple-api
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ""
+      database: 0
 
 # MyBatis Plus 全局配置
 mybatis-plus:
