@@ -10,20 +10,26 @@
     *   完整的 RBAC (基于角色的访问控制) 权限模型。
     *   支持到 API 级别的细粒度权限控制 (`@PreAuthorize`)。
 *   **完备的管理后台API**:
-    *   提供了对用户、角色、权限的完整 CRUD 和分配接口。
-    *   提供了操作日志的查询和审计功能。
+    *   提供了对**用户**、**角色**、**权限**的完整 CRUD 和分配接口。
+    *   提供了**系统配置**的动态管理接口。
+    *   提供了**字典数据**的类型和条目管理接口。
+    *   提供了**操作日志**的查询和审计功能。
+*   **生产化准备**:
+    *   **Redis 缓存**: 集成 Spring Cache 和 Redis，对高频访问数据（如用户权限、字典）进行缓存，并支持配置文件开关。
+    *   **API 幂等性保障**: 通过 Token + Redis + AOP 实现，防止重复提交关键操作。
+    *   **应用监控**: 集成 Spring Boot Actuator，提供标准化的健康检查和信息端点。
+    *   **异步处理**: 通过 `@Async` 为耗时任务（如日志记录）提供异步执行能力。
+    *   **启动时健康检查**: 强制检查数据库连接，确保服务在核心依赖不可用时启动失败 (Fail-Fast)。
+*   **高质量代码**:
+    *   **清晰的架构**: 严格遵循模块化、分层设计，通过 `modules`, `framework`, `config` 包分离业务、框架与配置。
+    *   **类型安全的配置**: 使用 `@ConfigurationProperties` 将配置项封装为强类型Bean，提高可维护性和开发效率。
+    *   **自定义校验注解**: 将业务校验逻辑从Service层解耦 (e.g., `@UniqueUsername`)。
+    *   **统一枚举处理**: 通过通用接口和类型处理器，实现枚举在前后端及数据库中的优雅转换。
+    *   **API文档**: 通过 Javadoc 和 SpringDoc 实现了完善、自动化的 API 文档。
 *   **专业的开发实践**:
     *   **自动化测试**: 集成了 JUnit 5, Mockito (单元测试) 和 **Testcontainers** (集成测试)，确保在真实的 Docker 容器环境中进行可靠的测试。
     *   **容器化支持**: 提供了优化的多阶段 `Dockerfile` 和用于本地开发的 `docker-compose.yml`。
-    *   **多环境配置**: 清晰地分离了 `local`, `test`, `prod`, `integration-test` 等环境的配置。
-*   **生产化准备**:
-    *   **Redis 缓存**: 集成 Spring Cache 和 Redis，对高频访问数据（如用户权限）进行缓存，并支持配置文件开关。
-    *   **应用监控**: 集成 Spring Boot Actuator，提供标准化的健康检查和信息端点。
-    *   **异步处理**: 通过 `@Async` 为耗时任务（如日志记录）提供异步执行能力。
-*   **高质量代码**:
-    *   清晰的模块化、分层架构 (`modules`, `framework`, `config`)。
-    *   统一、无歧义的命名规范和包结构。
-    *   通过 Javadoc 注释和 SpringDoc 实现了完善的 API 文档。
+    *   **多环境配置**: 清晰地分离了 `local`, `test`, `prod`, `integration-test` 等环境的配置，遵循“一次构建，随处运行”原则。
 
 ## 🛠️ 技术栈
 
@@ -54,7 +60,7 @@
     ```
 
 2.  **启动依赖服务**
-    项目根目录下的 `docker-compose.yml` 文件已经为您配置好了 MySQL 8.0 和 Redis 7.0 服务。只需在项目根目录下运行：
+    项目根目录下的 `docker-compose.yml` 文件已经为您配置好了 **MySQL 8.0** 和 **Redis 7.0** 服务。只需在项目根目录下运行：
     ```bash
     docker-compose up -d
     ```
@@ -107,9 +113,10 @@ mvn clean package
 
 ## 📖 API 文档
 
-项目启动后，可以通过以下地址访问由 SpringDoc 自动生成的 Swagger UI 界面：
+项目启动后，可以通过以下地址访问由 SpringDoc 自动生成的 Swagger UI 界面和 Actuator 监控端点：
 
 *   **Swagger UI**: [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html)
+*   **Actuator Health**: [http://localhost:8080/api/actuator/health](http://localhost:8080/api/actuator/health)
 
 ## ⚙️ 配置
 
@@ -130,18 +137,15 @@ mvn clean package
 │   ├── main
 │   │   ├── java
 │   │   │   └── com/example/simple
-│   │   │       ├── annotation      // 自定义注解
-│   │   │       ├── common          // 通用工具类、DTO、VO
+│   │   │       ├── common          // 通用工具类、DTO、VO、BaseEnum
 │   │   │       ├── config          // Spring 配置类 (按功能划分)
+│   │   │       │   ├── cache, doc, mybatis, redis, security, web
+│   │   │       │   └── properties  // 类型安全的配置属性类
 │   │   │       ├── exception       // 全局异常处理
-│   │   │       ├── framework       // 框架级横切关注点 (AOP, Security, Runner)
+│   │   │       ├── framework       // 框架级横切关注点
+│   │   │       │   ├── aop, async, idempotent, runner, security, validation, xss
 │   │   │       └── modules         // **核心业务模块** (按领域划分)
-│   │   │           ├── auth
-│   │   │           ├── file
-│   │   │           ├── log
-│   │   │           ├── permission
-│   │   │           ├── role
-│   │   │           └── user
+│   │   │           ├── auth, config, dict, file, log, permission, role, user
 │   │   └── resources
 │   │       ├── mapper              // Mybatis-Plus Mapper XML
 │   │       └── application.yml     // 配置文件
@@ -149,9 +153,10 @@ mvn clean package
 │       ├── java
 │       │   └── com/example/simple
 │       │       ├── BaseIntegrationTest.java // Testcontainers 集成测试基类
+│       │       ├── generator
 │       │       └── modules
 │       └── resources
-│           └── schema.sql          // Testcontainers 初始化脚本
+│           └── application-integration-test.yml
 ├── script/db
 │   └── simple.sql                  // 项目完整SQL脚本
 ├── .dockerignore
