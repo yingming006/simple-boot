@@ -1,6 +1,6 @@
 package com.example.simple.modules.user.controller;
 
-import com.example.simple.annotation.Idempotent;
+import com.example.simple.framework.idempotent.annotation.Idempotent;
 import com.example.simple.common.GlobalResponse;
 import com.example.simple.common.dto.PageQueryDTO;
 import com.example.simple.common.utils.AuthUtils;

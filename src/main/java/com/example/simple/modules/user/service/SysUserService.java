@@ -84,11 +84,6 @@ public class SysUserService {
 
     @Transactional
     public void createUser(SysUserCreateDTO createDTO) {
-        LambdaQueryWrapper<SysUserEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserEntity::getUsername, createDTO.getUsername());
-        if (sysUserMapper.selectCount(queryWrapper) > 0) {
-            throw new BusinessException("用户已存在");
-        }
         createDTO.setPassword(passwordEncoder.encode(createDTO.getPassword()));
         SysUserEntity newUser = sysUserConverter.toUser(createDTO);
         sysUserMapper.insert(newUser);
