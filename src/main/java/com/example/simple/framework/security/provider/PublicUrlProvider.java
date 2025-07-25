@@ -1,6 +1,6 @@
 package com.example.simple.framework.security.provider;
 
-import com.example.simple.annotation.AuthIgnore;
+import com.example.simple.framework.security.annotation.AuthIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier; // 引入 Qualifier
 import org.springframework.stereotype.Component;

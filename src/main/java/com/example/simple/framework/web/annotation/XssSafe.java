@@ -1,4 +1,4 @@
-package com.example.simple.annotation;
+package com.example.simple.framework.web.annotation;
 
 import com.example.simple.config.web.xss.XssDeserializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;

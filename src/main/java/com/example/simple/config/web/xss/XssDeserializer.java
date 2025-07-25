@@ -1,6 +1,6 @@
 package com.example.simple.config.web.xss;
 
-import com.example.simple.annotation.XssSafe;
+import com.example.simple.framework.web.annotation.XssSafe;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;

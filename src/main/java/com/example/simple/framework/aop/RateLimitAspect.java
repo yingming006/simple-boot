@@ -1,6 +1,6 @@
 package com.example.simple.framework.aop;
 
-import com.example.simple.annotation.RateLimit;
+import com.example.simple.framework.aop.annotation.RateLimit;
 import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.common.utils.IpUtils;
 import com.example.simple.exception.BusinessException;
@@ -37,7 +37,7 @@ public class RateLimitAspect {
                     return RateLimiter.create(permitsPerSecond);
                 }
             });
-    @Pointcut("@annotation(com.example.simple.annotation.RateLimit)")
+    @Pointcut("@annotation(com.example.simple.framework.aop.annotation.RateLimit)")
     public void rateLimitPointcut() {
     }
 

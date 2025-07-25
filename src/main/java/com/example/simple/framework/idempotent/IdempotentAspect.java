@@ -19,7 +19,7 @@ public class IdempotentAspect {
 
     private final IdempotentService idempotentService;
 
-    @Pointcut("@annotation(com.example.simple.annotation.Idempotent)")
+    @Pointcut("@annotation(com.example.simple.framework.idempotent.annotation.Idempotent)")
     public void idempotentPointcut() {
     }
 

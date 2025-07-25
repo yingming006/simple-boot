@@ -1,7 +1,7 @@
 package com.example.simple.modules.auth.controller;
 
-import com.example.simple.annotation.AuthIgnore;
-import com.example.simple.annotation.RateLimit;
+import com.example.simple.framework.security.annotation.AuthIgnore;
+import com.example.simple.framework.aop.annotation.RateLimit;
 import com.example.simple.common.GlobalResponse;
 import com.example.simple.framework.idempotent.IdempotentService;
 import com.example.simple.modules.auth.service.AuthService;

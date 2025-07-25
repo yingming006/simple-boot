@@ -1,4 +1,4 @@
-package com.example.simple.annotation;
+package com.example.simple.framework.idempotent.annotation;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
