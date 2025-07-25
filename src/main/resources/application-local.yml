@@ -35,3 +35,11 @@ springdoc:
     enabled: true
   javadoc:
     enabled: true
+
+# Actuator 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 开发时可以暴露所有端点，方便调试
+        include: "*"

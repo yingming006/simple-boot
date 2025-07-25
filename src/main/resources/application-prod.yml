@@ -50,3 +50,11 @@ springdoc:
     enabled: false
   javadoc:
     enabled: false
+
+# Actuator 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 生产环境默认只暴露最核心的 health 端点，用于负载均衡器的健康检查
+        include: "health"

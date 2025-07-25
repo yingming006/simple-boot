@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 @Slf4j
 @Component
-@Profile("local")
+@Profile({"local", "test"})
 @RequiredArgsConstructor
 public class SwaggerUILogger {
 
