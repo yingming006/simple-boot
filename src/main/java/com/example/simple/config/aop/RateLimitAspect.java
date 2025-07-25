@@ -14,6 +14,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.Profile; // 引入新注解
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 @Component
 @Slf4j
+@Profile("!test")
 public class RateLimitAspect {
 
     private final LoadingCache<String, RateLimiter> caches = CacheBuilder.newBuilder()
@@ -48,9 +50,7 @@ public class RateLimitAspect {
         if (rateLimit != null) {
             String key = generateKey(rateLimit, joinPoint);
             double permitsPerSecond = (double) rateLimit.count() / rateLimit.time();
-
             String cacheKey = "rate_limit:" + key + ":" + permitsPerSecond;
-
             RateLimiter limiter = caches.get(cacheKey);
 
             if (!limiter.tryAcquire()) {
