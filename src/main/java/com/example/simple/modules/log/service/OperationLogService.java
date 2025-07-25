@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.simple.common.dto.PageQueryDTO;
 import com.example.simple.common.vo.PageVO;
 import com.example.simple.modules.log.converter.LogConverter;
-import com.example.simple.modules.log.domain.SysOperationLog;
+import com.example.simple.modules.log.entity.SysOperationLog;
 import com.example.simple.modules.log.dto.LogDTO;
 import com.example.simple.modules.log.mapper.OperationLogMapper;
 import com.example.simple.modules.log.vo.LogVO;

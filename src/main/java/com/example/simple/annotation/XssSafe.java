@@ -1,6 +1,6 @@
 package com.example.simple.annotation;
 
-import com.example.simple.config.xss.XssDeserializer;
+import com.example.simple.config.web.xss.XssDeserializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 

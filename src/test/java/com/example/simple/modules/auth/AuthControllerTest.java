@@ -1,7 +1,7 @@
 package com.example.simple.modules.auth;
 
 import com.example.simple.BaseIntegrationTest;
-import com.example.simple.modules.auth.domain.SysUserRegisterDTO;
+import com.example.simple.modules.auth.dto.SysUserRegisterDTO;
 import com.example.simple.modules.user.service.SysUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

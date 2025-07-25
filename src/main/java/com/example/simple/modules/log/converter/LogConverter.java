@@ -1,6 +1,6 @@
 package com.example.simple.modules.log.converter;
 
-import com.example.simple.modules.log.domain.SysOperationLog;
+import com.example.simple.modules.log.entity.SysOperationLog;
 import com.example.simple.modules.log.vo.LogVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

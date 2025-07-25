@@ -1,6 +1,6 @@
 package com.example.simple.common.utils;
 
-import com.example.simple.security.principal.SecurityPrincipal;
+import com.example.simple.framework.security.principal.SecurityPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
