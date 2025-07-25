@@ -126,6 +126,39 @@ CREATE TABLE IF NOT EXISTS `sys_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表';
 
 -- -----------------------------------------------------
+-- 表 `sys_dict_type`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_dict_type` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典名称',
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_dict_type` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='字典类型表';
+
+
+-- -----------------------------------------------------
+-- 表 `sys_dict_data`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_dict_data` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典标签',
+  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典键值',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '显示排序',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_dict_type` (`dict_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='字典数据表';
+
+-- -----------------------------------------------------
 -- Section 2: 初始化数据 (Initial Data)
 -- -----------------------------------------------------
 
@@ -178,6 +211,21 @@ INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_o
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (61, 60, '查询配置', 'configs:list', 2, 61);
 -- 更新配置权限
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (62, 60, '更新配置', 'configs:update', 2, 62);
+-- 字典管理菜单 (父菜单ID=1，假设 '系统管理' 的ID为1)
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (70, 1, '字典管理', 'system:dict', 1, 70);
+-- 字典类型管理权限
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES
+(71, 70, '查询字典类型', 'dict_types:list', 2, 71),
+(72, 70, '新增字典类型', 'dict_types:create', 2, 72),
+(73, 70, '修改字典类型', 'dict_types:update', 2, 73),
+(74, 70, '删除字典类型', 'dict_types:delete', 2, 74);
+
+-- 字典数据管理权限
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES
+(75, 70, '查询字典数据', 'dict_data:list', 2, 75),
+(76, 70, '新增字典数据', 'dict_data:create', 2, 76),
+(77, 70, '修改字典数据', 'dict_data:update', 2, 77),
+(78, 70, '删除字典数据', 'dict_data:delete', 2, 78);
 
 --
 -- 4. 初始化用户与角色关联数据
@@ -194,9 +242,23 @@ INSERT INTO `sys_role_permission` (`role_id`, `permission_id`) VALUES
 (1, 30), (1, 31),
 (1, 40), (1, 41),
 (1, 50), (1, 51),
-(1, 60), (1, 61), (1, 62);
+(1, 60), (1, 61), (1, 62),
+(1, 70),
+(1, 71), (1, 72), (1, 73), (1, 74),
+(1, 75), (1, 76), (1, 77), (1, 78);
 
 -- 3. 初始化系统配置数据
 -- -----------------------------------------------------
 INSERT INTO `sys_config` (`config_key`, `config_name`, `config_value`, `remark`) VALUES
 ('user.default.password', '新用户默认密码', '123456', '通过后台“新增用户”功能创建新用户时，使用的默认初始密码');
+
+-- 3. 初始化字典数据
+-- -----------------------------------------------------
+INSERT INTO `sys_dict_type` (`id`, `name`, `type`, `status`, `remark`) VALUES
+(1, '用户性别', 'sys_user_gender', 0, '用户的性别分类');
+
+-- 为“用户性别”字典类型添加数据
+INSERT INTO `sys_dict_data` (`id`, `dict_type`, `label`, `value`, `sort_order`, `status`) VALUES
+(1, 'sys_user_gender', '男', '1', 1, 0),
+(2, 'sys_user_gender', '女', '2', 2, 0),
+(3, 'sys_user_gender', '未知', '0', 3, 0);
