@@ -70,7 +70,7 @@ public class OperationLogAspect {
         logEntity.setParams(serializeParams(joinPoint.getArgs()));
         logEntity.setIpAddress(IpUtils.getCurrentIpAddress());
         logEntity.setDuration(duration);
-        operationLogService.save(logEntity);
+        operationLogService.saveLog(logEntity);
     }
 
     /**
