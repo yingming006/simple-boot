@@ -1,7 +1,6 @@
 package com.example.simple.modules.file;
 
 import com.example.simple.exception.BusinessException;
-import com.example.simple.modules.user.service.UserService;
 import com.example.simple.common.GlobalResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

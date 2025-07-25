@@ -3,7 +3,7 @@ package com.example.simple.config.aop;
 import com.example.simple.annotation.OperationLog;
 import com.example.simple.common.utils.AuthUtils;
 import com.example.simple.common.utils.IpUtils;
-import com.example.simple.interceptor.LoginUser;
+import com.example.simple.security.principal.SecurityPrincipal;
 import com.example.simple.modules.log.domain.SysOperationLog;
 import com.example.simple.modules.log.service.OperationLogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,7 +61,7 @@ public class OperationLogAspect {
         OperationLog operationLogAnnotation = method.getAnnotation(OperationLog.class);
         logEntity.setOperation(operationLogAnnotation.value());
 
-        LoginUser loginUser = AuthUtils.getLoginUser();
+        SecurityPrincipal loginUser = AuthUtils.getLoginUser();
         if (loginUser != null) {
             logEntity.setUserId(loginUser.getId());
         }
