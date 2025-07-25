@@ -4,16 +4,10 @@ file:
   access-url-prefix: /test-files/
 
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/simple_api_test_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  # 使用 JPA/Hibernate 的 ddl-auto 功能来自动管理测试数据库的表结构
+  # 数据库连接信息将由 Testcontainers 动态提供，此处无需配置
+  # 我们需要 ddl-auto 来让 Hibernate 自动为我们创建表
   jpa:
     hibernate:
-      # create-drop: 在测试开始时创建所有表，在测试结束时删除所有表。
-      # 这能确保每次运行 mvn test 时，数据库都是一个干净的状态。
+      # create-drop: 在测试套件开始时创建所有表，在测试套件结束时删除所有表。
       ddl-auto: create-drop
     show-sql: true
