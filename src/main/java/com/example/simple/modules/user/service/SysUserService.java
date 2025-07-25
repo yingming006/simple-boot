@@ -8,6 +8,7 @@ import com.example.simple.common.vo.PageVO;
 import com.example.simple.exception.BusinessException;
 import com.example.simple.modules.auth.service.AuthService;
 import com.example.simple.modules.auth.dto.SysUserRegisterDTO;
+import com.example.simple.modules.config.service.SysConfigService;
 import com.example.simple.modules.role.entity.RoleEntity;
 import com.example.simple.modules.role.mapper.RoleMapper;
 import com.example.simple.modules.user.converter.SysUserConverter;
@@ -41,6 +42,9 @@ public class SysUserService {
     private final SysUserConverter sysUserConverter;
     private final PasswordEncoder passwordEncoder;
     private final RoleMapper roleMapper;
+    private final SysConfigService sysConfigService;
+
+    private static final String USER_DEFAULT_PASSWORD_KEY = "user.default.password";
 
     @Transactional
     public void register(SysUserRegisterDTO registerDTO) {
@@ -84,7 +88,20 @@ public class SysUserService {
 
     @Transactional
     public void createUser(SysUserCreateDTO createDTO) {
-        createDTO.setPassword(passwordEncoder.encode(createDTO.getPassword()));
+        String finalPassword = createDTO.getPassword();
+
+        // 如果前端没有提供密码，则从系统配置中获取默认密码
+        if (!StringUtils.hasText(finalPassword)) {
+            finalPassword = sysConfigService.getValueByKey(USER_DEFAULT_PASSWORD_KEY);
+            if (!StringUtils.hasText(finalPassword)) {
+                // 如果系统配置中也没有，抛出异常，防止创建空密码用户
+                throw new BusinessException("创建失败：未提供密码，且系统未配置默认密码。");
+            }
+        }
+
+        // 使用最终确定的密码进行加密
+        createDTO.setPassword(passwordEncoder.encode(finalPassword));
+
         SysUserEntity newUser = sysUserConverter.toUser(createDTO);
         sysUserMapper.insert(newUser);
     }

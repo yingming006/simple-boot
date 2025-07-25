@@ -110,6 +110,20 @@ CREATE TABLE IF NOT EXISTS `sys_role_permission` (
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色与权限关联表';
 
+-- -----------------------------------------------------
+-- 表 `sys_config`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_config` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置键',
+  `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
+  `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置值',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_config_key` (`config_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表';
 
 -- -----------------------------------------------------
 -- Section 2: 初始化数据 (Initial Data)
@@ -155,11 +169,15 @@ INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_o
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (40, 1, '日志管理', 'system:log', 1, 40);
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (41, 40, '查询日志', 'logs:list', 2, 41);
 -- 文件管理菜单 (父菜单ID=0，作为一个顶级菜单)
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
-VALUES (50, 0, '文件管理', 'system:file', 1, 50);
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (50, 0, '文件管理', 'system:file', 1, 50);
 -- 文件上传权限 (父菜单ID=50, 即 '文件管理')
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
-VALUES (51, 50, '文件上传', 'files:upload', 2, 51);
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (51, 50, '文件上传', 'files:upload', 2, 51);
+-- 系统配置管理菜单 (父菜单ID=1，假设 '系统管理' 的ID为1)
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (60, 1, '系统配置管理', 'system:config', 1, 60);
+-- 查询配置权限
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (61, 60, '查询配置', 'configs:list', 2, 61);
+-- 更新配置权限
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (62, 60, '更新配置', 'configs:update', 2, 62);
 
 --
 -- 4. 初始化用户与角色关联数据
@@ -175,4 +193,10 @@ INSERT INTO `sys_role_permission` (`role_id`, `permission_id`) VALUES
 (1, 20), (1, 21), (1, 22), (1, 23), (1, 24), (1, 25), (1, 26),
 (1, 30), (1, 31),
 (1, 40), (1, 41),
-(1, 50), (1, 51);
+(1, 50), (1, 51),
+(1, 60), (1, 61), (1, 62);
+
+-- 3. 初始化系统配置数据
+-- -----------------------------------------------------
+INSERT INTO `sys_config` (`config_key`, `config_name`, `config_value`, `remark`) VALUES
+('user.default.password', '新用户默认密码', '123456', '通过后台“新增用户”功能创建新用户时，使用的默认初始密码');
