@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 @Component
 @Slf4j
-@Profile("!test")
+@Profile("!integration-test")
 public class RateLimitAspect {
 
     private final LoadingCache<String, RateLimiter> caches = CacheBuilder.newBuilder()

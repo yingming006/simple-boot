@@ -9,8 +9,6 @@ server:
 spring:
   application:
     name: simple-api
-  profiles:
-    active: local
 
 # MyBatis Plus 配置
 mybatis-plus:
