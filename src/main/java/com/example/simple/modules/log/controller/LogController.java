@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 日志管理
+ * @author yingm
+ */
 @RestController
 @RequestMapping("/logs")
 @RequiredArgsConstructor
@@ -21,6 +25,9 @@ public class LogController {
 
     /**
      * 分页查询操作日志
+     * @param queryDTO 查询条件
+     * @param pageQueryDTO 分页参数
+     * @return 日志分页数据
      */
     @GetMapping
     @PreAuthorize("hasAuthority('logs:list')")

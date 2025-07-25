@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 权限管理
+ * @author yingm
+ */
 @RestController
 @RequestMapping("/permissions")
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class PermissionController {
 
     /**
      * 以树形结构获取所有权限
+     * @return 权限树
      */
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('permissions:list')")

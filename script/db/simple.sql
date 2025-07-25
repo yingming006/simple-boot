@@ -154,6 +154,12 @@ INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_o
 -- 日志管理
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (40, 1, '日志管理', 'system:log', 1, 40);
 INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (41, 40, '查询日志', 'logs:list', 2, 41);
+-- 文件管理菜单 (父菜单ID=0，作为一个顶级菜单)
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
+VALUES (50, 0, '文件管理', 'system:file', 1, 50);
+-- 文件上传权限 (父菜单ID=50, 即 '文件管理')
+INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
+VALUES (51, 50, '文件上传', 'files:upload', 2, 51);
 
 --
 -- 4. 初始化用户与角色关联数据
@@ -168,4 +174,5 @@ INSERT INTO `sys_role_permission` (`role_id`, `permission_id`) VALUES
 (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16),
 (1, 20), (1, 21), (1, 22), (1, 23), (1, 24), (1, 25), (1, 26),
 (1, 30), (1, 31),
-(1, 40), (1, 41);
+(1, 40), (1, 41),
+(1, 50), (1, 51);

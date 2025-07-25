@@ -3,19 +3,26 @@ package com.example.simple.modules.auth;
 import com.example.simple.annotation.AuthIgnore;
 import com.example.simple.annotation.RateLimit;
 import com.example.simple.common.GlobalResponse;
-import com.example.simple.security.principal.SecurityPrincipal;
 import com.example.simple.modules.auth.domain.LoginVO;
 import com.example.simple.modules.auth.domain.RefreshTokenDTO;
 import com.example.simple.modules.auth.domain.SysUserLoginDTO;
 import com.example.simple.modules.auth.domain.SysUserRegisterDTO;
 import com.example.simple.modules.user.service.SysUserService;
+import com.example.simple.security.principal.SecurityPrincipal;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 认证接口
+ * @author yingm
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -25,6 +32,11 @@ public class AuthController {
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * 用户注册
+     * @param registerDTO 注册信息
+     * @return 操作结果
+     */
     @AuthIgnore
     @PostMapping("/register")
     public GlobalResponse<Void> register(@RequestBody @Valid SysUserRegisterDTO registerDTO) {
@@ -32,11 +44,15 @@ public class AuthController {
         return GlobalResponse.success();
     }
 
+    /**
+     * 用户登录
+     * @param loginDTO 登录凭证
+     * @return 包含Token、用户信息和权限的登录视图
+     */
     @AuthIgnore
     @RateLimit(count = 5, time = 10, limitType = RateLimit.LimitType.IP, message = "登录尝试过于频繁，请稍后重试")
     @PostMapping("/login")
     public GlobalResponse<LoginVO> login(@Valid @RequestBody SysUserLoginDTO loginDTO) {
-        // 1. 使用 AuthenticationManager 进行认证
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getUsername(),
@@ -44,27 +60,32 @@ public class AuthController {
                 )
         );
 
-        // 2. 认证成功后，获取 Principal（LoginUser）
         SecurityPrincipal principal = (SecurityPrincipal) authentication.getPrincipal();
 
-        // 3. 创建 Token
         LoginVO loginVO = authService.createToken(principal);
 
-        // 4. 填充用户信息和权限列表
         loginVO.setUserInfo(sysUserService.getUserInfo(principal.getId()));
         loginVO.setPermissions(principal.getPermissions());
 
         return GlobalResponse.success(loginVO);
     }
 
+    /**
+     * 刷新Token
+     * @param refreshTokenDTO 包含刷新令牌的数据
+     * @return 新的Token信息
+     */
     @AuthIgnore
     @PostMapping("/refresh")
     public GlobalResponse<LoginVO> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
-        // 注意：刷新Token接口目前只返回Token，如有需要也可按登录接口方式增强
         LoginVO newTokens = authService.refreshToken(refreshTokenDTO.getRefreshToken());
         return GlobalResponse.success(newTokens);
     }
 
+    /**
+     * 用户登出
+     * @return 操作结果
+     */
     @PostMapping("/logout")
     public GlobalResponse<Void> logout() {
         authService.logout();
