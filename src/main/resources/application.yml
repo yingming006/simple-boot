@@ -1,3 +1,6 @@
+# ===================================================================
+#               主配置文件 (所有环境共享的默认配置)
+# ===================================================================
 server:
   port: 8080
   servlet:
@@ -10,25 +13,50 @@ spring:
   application:
     name: simple-api
 
-# MyBatis Plus 配置
+# MyBatis Plus 全局配置
 mybatis-plus:
-  # 多包名使用 例如 com.example.simple.modules.**.mapper,com.example.vv.modules.**.mapper
   mapperPackage: com.example.simple.modules.**.mapper
-  # 对应的 XML 文件位置
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   global-config:
     db-config:
-      # 逻辑删除配置（如果需要可以打开，保持简单暂时不用）
+      # 逻辑删除配置
       # logic-delete-field: is_deleted # 全局逻辑删除的实体字段名
       # logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       # logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
       # 主键策略 AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
       id-type: ASSIGN_UUID
 
+# 日志配置
 logging:
   config: classpath:logback-spring.xml
 
+# 认证配置
 auth:
   single-session:
     # true:开启后，新登录会使旧设备Token失效; false:允许多设备同时登录
     enabled: true
+
+file:
+  storage:
+    type: local
+  # 默认的、可移植的文件存储根路径
+  root-path: "#{systemProperties['user.dir']}/uploads"
+  # 默认的URL访问前缀
+  access-url-prefix: /uploads/
+  # 云存储服务商配置模板
+  provider:
+    aliyun-oss:
+      endpoint:
+      access-key-id:
+      access-key-secret:
+      bucket-name:
+    tencent-cos:
+      region:
+      secret-id:
+      secret-key:
+      bucket-name:
+    huawei-obs:
+      endpoint:
+      access-key-id:
+      access-key-secret:
+      bucket-name:

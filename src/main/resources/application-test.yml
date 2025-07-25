@@ -1,14 +1,12 @@
 # ===================================================================
-#                  测试环境 (Testing Profile)
+#                  测试服务器环境 (Test Profile)
 # ===================================================================
-
-server:
-  port: 8082
 spring:
   config:
     activate:
       on-profile: test
   datasource:
+    lazy-initialization: false
     url: jdbc:mysql://localhost:3306/simple_api_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
@@ -19,19 +17,11 @@ spring:
       minimum-idle: 5
       maximum-pool-size: 20
 
-# Mybatis-plus 开发环境开启 SQL 日志打印
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-logging:
-  level:
-    com.example.simple: DEBUG
+server:
+  port: 8082
 
 file:
-  upload-path: /www/wwwroot/java/simple/uploads/
-  # 外部访问上传图片的URL前缀
-  access-url-prefix: /uploads/
+  root-path: "/www/wwwroot/java/simple/uploads/"
 
 springdoc:
   swagger-ui:

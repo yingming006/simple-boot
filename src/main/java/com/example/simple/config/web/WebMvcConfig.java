@@ -6,20 +6,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.File;
+
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${file.upload-path}")
-    private String uploadPath;
+    @Value("${file.root-path}")
+    private String rootPath;
 
     @Value("${file.access-url-prefix}")
     private String accessUrlPrefix;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 配置静态资源映射，用于访问上传的图片
+        String path = rootPath.endsWith(File.separator) ? rootPath : rootPath + File.separator;
+
         registry.addResourceHandler(accessUrlPrefix + "**")
-                .addResourceLocations("file:" + uploadPath);
+                .addResourceLocations("file:" + path);
     }
 }

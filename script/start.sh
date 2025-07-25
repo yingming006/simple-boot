@@ -16,7 +16,6 @@ APP_ARGS=(
   --spring.datasource.url="jdbc:mysql://prod-db-host:3306/simple_api_prod_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
   --spring.datasource.username="prod_user"
   --spring.datasource.password="YOUR_SECURE_PROD_PASSWORD"
-  --file.upload-path="/data/simple/uploads/"
 )
 
 # ======================= 脚本核心 (一般无需修改) =======================

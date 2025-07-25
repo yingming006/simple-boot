@@ -1,6 +1,9 @@
-package com.example.simple.modules.file;
+package com.example.simple.modules.file.strategy;
 
+import com.example.simple.exception.BusinessException;
+import com.example.simple.modules.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,34 +13,33 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+/**
+ * 文件存储服务的本地实现。
+ * 将文件保存到服务器的本地磁盘。
+ */
 @Service
-public class FileService {
+@ConditionalOnProperty(name = "file.storage.type", havingValue = "local")
+public class LocalFileStorageService implements FileStorageService {
 
-    @Value("${file.upload-path}")
-    private String uploadPath;
+    @Value("${file.root-path}")
+    private String rootPath;
 
     @Value("${file.access-url-prefix}")
     private String accessUrlPrefix;
 
-    /**
-     * 保存上传的文件到本地，并返回其可访问的URL。
-     *
-     * @param file 上传的文件
-     * @return 文件的可访问URL
-     * @throws IOException 文件读写异常
-     */
-    public String saveUploadedFile(MultipartFile file) throws IOException {
+    @Override
+    public String upload(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("上传的文件不能为空");
+            throw new BusinessException("上传的文件不能为空");
         }
 
         LocalDate today = LocalDate.now();
         String datePath = today.format(DateTimeFormatter.ofPattern("yyyy/MM"));
 
-        File uploadDir = new File(uploadPath, datePath);
+        File uploadDir = new File(rootPath, datePath);
         if (!uploadDir.exists()) {
             if (!uploadDir.mkdirs()) {
-                throw new IOException("创建目录失败");
+                throw new IOException("创建目录失败: " + uploadDir.getAbsolutePath());
             }
         }
 
@@ -51,6 +53,9 @@ public class FileService {
         File destFile = new File(uploadDir, newFileName);
         file.transferTo(destFile);
 
-        return accessUrlPrefix + datePath + "/" + newFileName;
+        // 拼接可访问的URL并返回
+        String urlPath = datePath + "/" + newFileName;
+        return accessUrlPrefix.endsWith("/") ? accessUrlPrefix + urlPath
+                : accessUrlPrefix + "/" + urlPath;
     }
 }

@@ -15,14 +15,13 @@ import java.util.List;
 
 /**
  * 文件上传接口
- * @author yingm
  */
 @RestController
 @RequestMapping("/upload")
 @RequiredArgsConstructor
 public class UploadController {
 
-    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     /**
      * 上传单个文件
@@ -33,7 +32,7 @@ public class UploadController {
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('files:upload')")
     public GlobalResponse<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        String fileUrl = fileService.saveUploadedFile(file);
+        String fileUrl = fileStorageService.upload(file);
         return GlobalResponse.success(fileUrl);
     }
 
@@ -60,7 +59,7 @@ public class UploadController {
 
         List<String> fileUrls = new ArrayList<>();
         for (MultipartFile file : validFiles) {
-            String fileUrl = fileService.saveUploadedFile(file);
+            String fileUrl = fileStorageService.upload(file);
             fileUrls.add(fileUrl);
         }
 

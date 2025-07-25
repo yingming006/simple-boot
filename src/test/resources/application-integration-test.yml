@@ -1,6 +1,5 @@
 # 为测试环境提供必要的属性占位符
 file:
-  upload-path: /tmp/simple-boot-test-uploads/
   access-url-prefix: /test-files/
 
 spring:
