@@ -27,7 +27,7 @@
     *   **统一枚举处理**: 通过通用接口和类型处理器，实现枚举在前后端及数据库中的优雅转换。
     *   **API文档**: 通过 Javadoc 和 SpringDoc 实现了完善、自动化的 API 文档。
 *   **专业的开发实践**:
-    *   **自动化测试**: 集成了 JUnit 5, Mockito (单元测试) 和 **Testcontainers** (集成测试)，确保在真实的 Docker 容器环境中进行可靠的测试。
+    *   **自动化测试**: 集成了 JUnit 5, Mockito (单元测试) 和 **Testcontainers** (集成测试)，确保在真实的、临时的 Docker 容器环境中进行可靠的测试。
     *   **容器化支持**: 提供了优化的多阶段 `Dockerfile` 和用于本地开发的 `docker-compose.yml`。
     *   **多环境配置**: 清晰地分离了 `local`, `test`, `prod`, `integration-test` 等环境的配置，遵循“一次构建，随处运行”原则。
 
@@ -73,7 +73,7 @@
 
 ### 运行自动化测试
 
-本项目集成了完善的单元测试和集成测试。集成测试会自动使用 Testcontainers 启动临时的 Docker 容器来运行，确保测试环境的纯净。
+本项目集成了完善的单元测试和集成测试。集成测试会自动使用 Testcontainers 启动临时的、一次性的 Docker 容器来运行，确保测试环境的绝对纯净和一致性。
 
 在项目根目录下运行 Maven 命令即可：
 ```bash
@@ -118,18 +118,7 @@ mvn clean package
 *   **Swagger UI**: [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html)
 *   **Actuator Health**: [http://localhost:8080/api/actuator/health](http://localhost:8080/api/actuator/health)
 
-## ⚙️ 配置
-
-项目采用多环境配置文件的方式进行管理：
-*   `application.yml`: 存放所有环境共享的通用配置。
-*   `application-local.yml`: 本地开发环境配置。
-*   `application-test.yml`: 测试服务器环境配置。
-*   `application-prod.yml`: 生产环境配置。
-*   `src/test/resources/application-integration-test.yml`: 自动化集成测试专用配置。
-
-通过 `-Dspring.profiles.active=<profile>` 或 `SPRING_PROFILES_ACTIVE=<profile>` 环境变量来激活不同的配置。
-
-## 🏗️ 项目结构
+## 🏗️ 项目结构 (最终版)
 
 ```
 .
@@ -148,17 +137,17 @@ mvn clean package
 │   │   │           ├── auth, config, dict, file, log, permission, role, user
 │   │   └── resources
 │   │       ├── mapper              // Mybatis-Plus Mapper XML
-│   │       └── application.yml     // 配置文件
+│   │       └── application.yml     // 配置文件 (多环境)
 │   └── test                        // 自动化测试
 │       ├── java
 │       │   └── com/example/simple
 │       │       ├── BaseIntegrationTest.java // Testcontainers 集成测试基类
-│       │       ├── generator
 │       │       └── modules
 │       └── resources
-│           └── application-integration-test.yml
+│           ├── application-integration-test.yml
+│           └── schema.sql          // Testcontainers 初始化表结构脚本
 ├── script/db
-│   └── simple.sql                  // 项目完整SQL脚本
+│   └── simple.sql                  // 项目完整SQL脚本 (含数据)
 ├── .dockerignore
 ├── docker-compose.yml              // 本地开发环境编排
 ├── Dockerfile                      // 应用容器化构建文件
