@@ -1,12 +1,16 @@
-# 为测试环境提供必要的属性占位符
 file:
-  access-url-prefix: /test-files/
+  storage:
+    type: local
+  # 默认的、可移植的文件存储根路径
+  root-path: "#{systemProperties['user.dir']}/uploads"
+  # 默认的URL访问前缀
+  access-url-prefix: /uploads/
 
-spring:
-  # 数据库连接信息将由 Testcontainers 动态提供，此处无需配置
-  # 我们需要 ddl-auto 来让 Hibernate 自动为我们创建表
-  jpa:
-    hibernate:
-      # create-drop: 在测试套件开始时创建所有表，在测试套件结束时删除所有表。
-      ddl-auto: create-drop
-    show-sql: true
+#spring:
+#  # 数据库连接信息将由 Testcontainers 动态提供，此处无需配置
+#  # 我们需要 ddl-auto 来让 Hibernate 自动为我们创建表
+#  jpa:
+#    hibernate:
+#      # create-drop: 在测试套件开始时创建所有表，在测试套件结束时删除所有表。
+#      ddl-auto: create-drop
+#    show-sql: true

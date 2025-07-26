@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Objects;
  * Jackson反序列化器，用于执行XSS净化。
  * 实现了 ContextualDeserializer 接口，以便在运行时根据字段注解动态选择净化策略。
  */
+@Component
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class XssDeserializer extends JsonDeserializer<String> implements ContextualDeserializer {

@@ -20,7 +20,7 @@ public class PageVO<T> implements Serializable {
     /**
      * 当前页的数据列表
      */
-    private List<T> list;
+    private List<T> records;
 
     /**
      * 总记录数
@@ -49,7 +49,7 @@ public class PageVO<T> implements Serializable {
      */
     public static <T> PageVO<T> of(IPage<T> page) {
         PageVO<T> vo = new PageVO<>();
-        vo.setList(page.getRecords());
+        vo.setRecords(page.getRecords());
         vo.setTotal(page.getTotal());
         vo.setPageNum(page.getCurrent());
         vo.setPageSize(page.getSize());

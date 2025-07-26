@@ -110,69 +110,50 @@ CREATE TABLE IF NOT EXISTS `sys_role_permission` (
   CONSTRAINT `fk_role_permission_permission` FOREIGN KEY (`permission_id`) REFERENCES `sys_permission` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色与权限关联表';
 
+-- -----------------------------------------------------
+-- 表 `sys_config`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_config` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置键',
+  `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
+  `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置值',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_config_key` (`config_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表';
 
 -- -----------------------------------------------------
--- Section 2: 初始化数据 (Initial Data)
+-- 表 `sys_dict_type`
 -- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_dict_type` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典名称',
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_dict_type` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='字典类型表';
 
---
--- 1. 初始化角色数据
---
-INSERT INTO `sys_role` (`id`, `name`, `code`, `description`) VALUES
-(1, '超级管理员', 'SUPER_ADMIN', '系统最高权限拥有者'),
-(2, '普通用户', 'USER', '拥有基本的查看权限');
 
---
--- 2. 初始化用户数据 (密码: 123456)
---
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`) VALUES
-(1, 'admin', '$2a$10$Zt22V.Ipl/Eo2g1.QotgP.06PYSXYDSJEoR1ChJYziTxlQtV7dK/C', '超级管理员');
-
---
--- 3. 初始化权限数据 (菜单和API)
---
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (1, 0, '系统管理', 'system', 1, 0);
--- 用户管理
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (10, 1, '用户管理', 'system:user', 1, 10);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (11, 10, '查询用户', 'users:list', 2, 11);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (12, 10, '新增用户', 'users:create', 2, 12);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (13, 10, '修改用户', 'users:update', 2, 13);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (14, 10, '删除用户', 'users:delete', 2, 14);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (15, 10, '用户详情', 'users:detail', 2, 15);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (16, 10, '分配角色', 'users:assign_roles', 2, 16);
--- 角色管理
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (20, 1, '角色管理', 'system:role', 1, 20);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (21, 20, '查询角色', 'roles:list', 2, 21);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (22, 20, '新增角色', 'roles:create', 2, 22);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (23, 20, '修改角色', 'roles:update', 2, 23);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (24, 20, '删除角色', 'roles:delete', 2, 24);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (25, 20, '角色详情', 'roles:detail', 2, 25);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (26, 20, '分配权限', 'roles:assign_permissions', 2, 26);
--- 权限管理
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (30, 1, '权限管理', 'system:permission', 1, 30);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (31, 30, '查询权限', 'permissions:list', 2, 31);
--- 日志管理
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (40, 1, '日志管理', 'system:log', 1, 40);
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`) VALUES (41, 40, '查询日志', 'logs:list', 2, 41);
--- 文件管理菜单 (父菜单ID=0，作为一个顶级菜单)
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
-VALUES (50, 0, '文件管理', 'system:file', 1, 50);
--- 文件上传权限 (父菜单ID=50, 即 '文件管理')
-INSERT INTO `sys_permission` (`id`, `parent_id`, `name`, `code`, `type`, `sort_order`)
-VALUES (51, 50, '文件上传', 'files:upload', 2, 51);
-
---
--- 4. 初始化用户与角色关联数据
---
-INSERT INTO `sys_user_role` (`user_id`, `role_id`) VALUES (1, 1);
-
---
--- 5. 初始化角色与权限关联数据
---
-INSERT INTO `sys_role_permission` (`role_id`, `permission_id`) VALUES
-(1, 1),
-(1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16),
-(1, 20), (1, 21), (1, 22), (1, 23), (1, 24), (1, 25), (1, 26),
-(1, 30), (1, 31),
-(1, 40), (1, 41),
-(1, 50), (1, 51);
+-- -----------------------------------------------------
+-- 表 `sys_dict_data`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sys_dict_data` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典标签',
+  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典键值',
+  `sort_order` int NOT NULL DEFAULT '0' COMMENT '显示排序',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_dict_type` (`dict_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='字典数据表';
